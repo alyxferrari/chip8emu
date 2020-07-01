@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import javax.emeryferrari.chip8.*;
 @SuppressWarnings("serial")
 public class CPU extends JFrame {
 	private JButton button;
@@ -22,7 +23,8 @@ public class CPU extends JFrame {
 	public CPU(File file) throws IOException {
 		this();
 		if (file.length() <= 0) {
-			throw new IOException();
+			System.err.println("Error: CHIP-8 binaries must not be empty.");
+			System.exit(2);
 		} else if (file.length() > 3232) {
 			System.err.println("Error: CHIP-8 binaries must not be more than 3232 bytes due to memory constraints.");
 			System.exit(1);
@@ -267,6 +269,7 @@ public class CPU extends JFrame {
 				this.repaint();
 			}
 		}
+		Launcher.fps++;
 	}
 	@Override
 	public void paint(Graphics g) {

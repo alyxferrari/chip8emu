@@ -3,10 +3,12 @@ import javax.emeryferrari.chip8.comp.*;
 import javax.swing.*;
 import java.io.*;
 public class Launcher {
-	private static final String PROGRAM_VERSION = "v1.0 beta 1";
+	@SuppressWarnings("unused")
+	private static final String PROGRAM_VERSION = "v1.0 beta 2";
 	private static final Launcher CLASS_OBJ = new Launcher();
-	private CPU cpu;
 	private static int clock = 33;
+	private CPU cpu;
+	public static int fps = 0;
 	public static void main(String[] args) throws IOException, InterruptedException {
 		File file = new File("");
 		if (args.length == 2) {
@@ -50,9 +52,23 @@ public class Launcher {
 		CLASS_OBJ.cpu.setVisible(true);
 		CLASS_OBJ.cpu.revalidate();
 		CLASS_OBJ.cpu.repaint();
+		long lastFpsTime = 0L;
+		long lastLoopTime = System.nanoTime();
 		while (true) {
-			Thread.sleep(1000/clock);
-			CLASS_OBJ.cpu.cycle(1);
+			long now = System.nanoTime();
+		    long updateLength = now - lastLoopTime;
+		    lastLoopTime = now;
+		    lastFpsTime += updateLength;
+		    if (lastFpsTime >= 1000000000) {
+		    	System.out.println("Clock speed: " + fps);
+		        lastFpsTime = 0;
+		        fps = 0;
+		    }
+		    CLASS_OBJ.cpu.cycle(1);
+		    long tmp = (lastLoopTime-System.nanoTime()+clock)/1000000;
+	    	if (tmp > 0) {
+	    		try {Thread.sleep(tmp);} catch (InterruptedException ex) {ex.printStackTrace();}
+	    	}
 		}
 	}
 	public static void printUsage() {
