@@ -62,8 +62,8 @@ public class Launcher {
 	}
 	public static void printUsage() {
 		System.out.println("Arguments:");
-		System.out.println("  -rom rom: specifies a program to be loaded into the CHIP-8");
-		System.out.println("  -clock speed: (optional) specifies a clock speed, up to 1000 Hz, with which to run the emulated CHIP-8");
+		System.out.println("  -rom rom: specifies a program to be loaded into the emulated CHIP-8");
+		System.out.println("  -clock speed: (optional) specifies a clock speed, up to 1 kHz, with which to run the emulated CHIP-8");
 		System.out.println("  -help: Displays this menu");
 		System.exit(1);
 	}
