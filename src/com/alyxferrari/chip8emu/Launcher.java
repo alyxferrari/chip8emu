@@ -1,5 +1,5 @@
-package javax.emeryferrari.chip8;
-import javax.emeryferrari.chip8.comp.*;
+package com.alyxferrari.chip8emu;
+import com.alyxferrari.chip8emu.hardware.*;
 import javax.swing.*;
 import java.io.*;
 public class Launcher {
@@ -44,7 +44,8 @@ public class Launcher {
 				Launcher.printUsage();
 			}
 		} else {
-			Launcher.printUsage();
+			file = new File("/Users/alyx/Downloads/testrom.ch8");
+			//Launcher.printUsage();
 		}
 		CLASS_OBJ.cpu = new CPU(file);
 		CLASS_OBJ.cpu.setSize(800, 600);
@@ -52,18 +53,10 @@ public class Launcher {
 		CLASS_OBJ.cpu.setVisible(true);
 		CLASS_OBJ.cpu.revalidate();
 		CLASS_OBJ.cpu.repaint();
-		long lastFpsTime = 0L;
 		long lastLoopTime = System.nanoTime();
 		while (true) {
 			long now = System.nanoTime();
-		    long updateLength = now - lastLoopTime;
 		    lastLoopTime = now;
-		    lastFpsTime += updateLength;
-		    if (lastFpsTime >= 1000000000) {
-		    	System.out.println("Clock speed: " + fps);
-		        lastFpsTime = 0;
-		        fps = 0;
-		    }
 		    CLASS_OBJ.cpu.cycle(1);
 		    long tmp = (lastLoopTime-System.nanoTime()+clock)/1000000;
 	    	if (tmp > 0) {
