@@ -1,14 +1,11 @@
 package com.alyxferrari.chip8emu.hardware;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
 import java.io.*;
+import java.awt.*;
 import com.alyxferrari.chip8emu.*;
-@SuppressWarnings("serial")
-public class CPU extends JFrame {
-	private JButton button;
+public class CPU {
 	Memory mem;
 	Registers reg;
+	Renderer renderer;
 	public CPU(File file) throws IOException {
 		this();
 		if (file.length() <= 0) {
@@ -27,12 +24,10 @@ public class CPU extends JFrame {
 		}
 		fis.close();
 	}
-	public CPU() {
+	public CPU() throws IOException {
 		mem = new Memory();
 		reg = new Registers();
-		button = new JButton("Cycle");
-		button.addActionListener(new CycleListener());
-		this.getContentPane().add(BorderLayout.SOUTH, button);
+		renderer = new Renderer(640, 320, mem.gpuMem, Color.black, Color.red);
 		Thread thread = new Timers();
 		thread.start();
 	}
@@ -226,34 +221,10 @@ public class CPU extends JFrame {
 			}
 			reg.pc += 2;
 			if (reg.drawFlag) {
-				this.repaint();
+				renderer.updateFramebuffer(mem.gpuMem);
 			}
 		}
 		Launcher.fps++;
-	}
-	@Override
-	public void paint(Graphics g) {
-		super.paint(g);
-		for (int x = 0; x < 64; x++) {
-			for (int y = 0; y < 32; y++) {
-				if (mem.gpuMem[(64*y) + x] == 0) {
-					g.setColor(Color.BLACK);
-					g.fillRect((10*x)+20, (10*y)+50, 10, 10);
-				} else if (mem.gpuMem[(64*y) + x] == 1) {
-					g.setColor(Color.RED);
-					g.fillRect((10*x)+20, (10*y)+50, 10, 10);
-				}
-			}
-		}
-		/*
-		for (int x = 0; x < 64; x++) {
-			for (int y = 0; y < 32; y++) {
-				g.setColor(Color.RED);
-				g.drawRect((10*x)+20, (10*y)+50, 10, 10);
-			}
-		}
-		*/
-		reg.drawFlag = false;
 	}
 	public class Timers extends Thread {
 		@Override
@@ -276,21 +247,15 @@ public class CPU extends JFrame {
 			}
 		}
 	}
-
-	public class CycleListener implements ActionListener {
-		public void actionPerformed(ActionEvent ev) {
-			cycle(1);
+	public class RenderThread extends Thread {
+		@Override
+		public void run() {
+			renderer.startRender();
 		}
 	}
-	public class FrameListener implements KeyListener {
-		public void keyPressed(KeyEvent ev) {
-			
-		}
-		public void keyReleased(KeyEvent ev) {
-			
-		}
-		public void keyTyped(KeyEvent ev) {
-			
+	public void setKey(int index, boolean value) {
+		if (index >= 0 && index <= 15) {
+			reg.keypad[index] = value;
 		}
 	}
 }

@@ -8,6 +8,7 @@ public class Launcher {
 	private static final Launcher CLASS_OBJ = new Launcher();
 	private static int clock = 33;
 	private CPU cpu;
+	private Renderer renderer;
 	public static int fps = 0;
 	public static void main(String[] args) throws IOException, InterruptedException {
 		File file = new File("");
@@ -48,11 +49,6 @@ public class Launcher {
 			//Launcher.printUsage();
 		}
 		CLASS_OBJ.cpu = new CPU(file);
-		CLASS_OBJ.cpu.setSize(800, 600);
-		CLASS_OBJ.cpu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		CLASS_OBJ.cpu.setVisible(true);
-		CLASS_OBJ.cpu.revalidate();
-		CLASS_OBJ.cpu.repaint();
 		long lastLoopTime = System.nanoTime();
 		while (true) {
 			long now = System.nanoTime();
@@ -70,5 +66,8 @@ public class Launcher {
 		System.out.println("  -clock speed: (optional) specifies a clock speed, up to 1000 Hz, with which to run the emulated CHIP-8");
 		System.out.println("  -help: Displays this menu");
 		System.exit(1);
+	}
+	public static void setKey(int index, boolean value) {
+		CLASS_OBJ.cpu.setKey(index, value);
 	}
 }
